@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <form class="card stack" method="post">
+    <h2 style="margin:0">{{ "Create an account" if mode == "register" else "Log in" }}</h2>
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <input name="username" placeholder="Username" required maxlength="30" autocomplete="username">
+    <input name="password" type="password" placeholder="Password{{ ' (min 8 characters)' if mode == 'register' }}" required
+           autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}">
+    <div><button>{{ "Register" if mode == "register" else "Log in" }}</button></div>
+    {% if mode == "register" %}
+      <p class="muted" style="margin:0">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    {% else %}
+      <p class="muted" style="margin:0">No account yet? <a href="{{ url_for('register') }}">Register</a></p>
+    {% endif %}
+  </form>
+{% endblock %}

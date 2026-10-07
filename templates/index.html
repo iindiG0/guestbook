@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+  {% if g.user %}
+    <form class="card stack" method="post" action="{{ url_for('post_message') }}">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <textarea name="body" rows="3" maxlength="500" placeholder="Write a message..." required></textarea>
+      <div><button>Post</button></div>
+    </form>
+  {% else %}
+    <p class="card muted"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">register</a> to write a message.</p>
+  {% endif %}
+
+  {% for m in messages %}
+    <div class="card">
+      <div class="msg-head">
+        <b>{{ m.username }}</b>
+        <span>{{ m.created_at.strftime('%d %b %Y, %H:%M') }} UTC</span>
+      </div>
+      <p class="msg-body">{{ m.body }}</p>
+      {% if g.user and g.user.id == m.user_id %}
+        <div class="msg-actions">
+          <form method="post" action="{{ url_for('delete_message', message_id=m.id) }}">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <button class="danger">Delete</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="muted">No messages yet.</p>
+  {% endfor %}
+
+{% endblock %}
